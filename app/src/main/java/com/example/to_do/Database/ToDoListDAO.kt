@@ -15,36 +15,54 @@ interface ToDoListDAO  {
     @Delete
     suspend fun deleteTask(tasks:Tasks)
 
-    @Query("SELECT * FROM todolist")
+    // All tasks active and cpmpleted
+    @Query("SELECT * FROM todolist WHERE status='Active'")
     fun getAllTask() : LiveData<List<Tasks>>
 
+    //
+    @Query("SELECT * FROM todolist WHERE status='deactivated'")
+    fun getDeactivatedTasks(): LiveData<List<Tasks>>
 
-    // and AND operator to add another condition to the where clause
+
 
     // for work page
     @Query("SELECT * FROM todolist WHERE category ='Work' AND status='Active'")
     fun getWorkTask(): LiveData<List<Tasks>>
 
+    @Query("SELECT * FROM todolist WHERE category='Work' AND status='deactivated'")
+    fun getAllCompletedWorkTask():LiveData<List<Tasks>>
+
     // for personal page
     @Query("SELECT * FROM todolist WHERE category ='Personal'AND status ='Active'")
     fun getAllPersonalTask():LiveData<List<Tasks>>
+
+    @Query("SELECT * FROM todolist WHERE category='Personal' AND status='deactivated'")
+    fun getAllCompletedPersonalTask():LiveData<List<Tasks>>
 
     // for wishlist page
     @Query("SELECT * FROM todolist WHERE category='Wishlist'AND status ='Active'")
     fun getAllWishlistTask():LiveData<List<Tasks>>
 
+    @Query("SELECT * FROM todolist WHERE category='Wishlist' AND status='deactivated'")
+    fun getAllCompletedWishlistTask():LiveData<List<Tasks>>
+
     // for birthday page
     @Query("SELECT * FROM todolist WHERE  category='Birthday'AND status ='Active'")
     fun getAllBirthdaTask():LiveData<List<Tasks>>
+
+    @Query("SELECT * FROM todolist WHERE category='Birthday' AND status='deactivated'")
+    fun getAllCompletedBirthdayTask():LiveData<List<Tasks>>
 
     // for list page
     @Query("SELECT * FROM todolist WHERE  category='List'AND status ='Active'")
     fun getAllListTask(): LiveData<List<Tasks>>
 
-    //
-    @Query("SELECT * FROM todolist WHERE status='Deactivated'AND status ='Active'")
-    fun getDeactivatedTasks(): LiveData<List<Tasks>>
+    @Query("SELECT * FROM todolist WHERE category='List' AND status='deactivated'")
+    fun getAllCompletedListTask():LiveData<List<Tasks>>
 
+
+
+    // updates the status of tast to deactivated
     @Query("UPDATE todolist SET status= 'deactivated' WHERE task = :taskName")
     suspend fun updateStatus(taskName: String)
 
