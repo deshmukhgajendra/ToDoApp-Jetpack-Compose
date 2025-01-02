@@ -13,6 +13,10 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
@@ -27,15 +31,19 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.to_do.ActionIcon
 import com.example.to_do.Database.Tasks
 import com.example.to_do.Database.UserViewModel
 import com.example.to_do.R
+import com.example.to_do.SwipableItemsWithActions
 import com.example.to_do.TaskProperty
+import com.example.to_do.ui.theme.BottomBarcolor
 import com.example.to_do.ui.theme.CompletedTaskStyle
 
 @Composable
@@ -104,25 +112,53 @@ fun DeletedWorkListTask(tasks:List<Tasks>){
     }
 }
 @Composable
-fun WorkItem(task: Tasks){
+fun WorkItem(task: Tasks) {
 
     var selected by remember { mutableStateOf(false) }
     val context = LocalContext.current
 
-    Card (modifier = Modifier
-        .fillMaxWidth()
-        .padding(4.dp),
-        shape = RoundedCornerShape(6.dp),
-        onClick = {
-            val intent=Intent(context,TaskProperty::class.java).apply {
-                putExtra("Task_Name",task.task) }
-            context.startActivity(intent)
-        }
-    ){
-        Row (modifier = Modifier.padding(8.dp),
-            verticalAlignment = Alignment.CenterVertically){
-            RadioButton(selected = selected, onClick = { selected= !selected})
-            Text(text = task.task, style = MaterialTheme.typography.bodyLarge)
+    var isOptionRevealed by remember {
+        mutableStateOf(false)
+    }
+
+
+
+    SwipableItemsWithActions(isRevealed = isOptionRevealed, actions = {
+
+        ActionIcon(
+            onClick = { /*TODO*/ },
+            backgrooundColor = Color.Red, icon = Icons.Filled.Delete
+        )
+        ActionIcon(
+            onClick = { /*TODO*/ },
+            backgrooundColor = Color.Blue,
+            icon = Icons.Filled.DateRange
+        )
+        ActionIcon(
+            onClick = { /*TODO*/ },
+            backgrooundColor = BottomBarcolor,
+            icon = Icons.Filled.Star
+        )
+    }) {
+
+        Card(modifier = Modifier
+            .fillMaxWidth()
+            .padding(4.dp),
+            shape = RoundedCornerShape(6.dp),
+            onClick = {
+                val intent = Intent(context, TaskProperty::class.java).apply {
+                    putExtra("Task_Name", task.task)
+                }
+                context.startActivity(intent)
+            }
+        ) {
+            Row(
+                modifier = Modifier.padding(8.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                RadioButton(selected = selected, onClick = { selected = !selected })
+                Text(text = task.task, style = MaterialTheme.typography.bodyLarge)
+            }
         }
     }
 }
