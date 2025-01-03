@@ -85,9 +85,9 @@ fun WishlistPage(title:String,navController: NavController,viewModel: UserViewMo
 
                     Text(text = "Completed Tasks",
                         fontSize = 20.sp,
-                        modifier = Modifier.padding(vertical = 8.dp))
+                        modifier = Modifier.padding( 8.dp))
 
-                    DeletedWishList(completedWishListTasks)
+                    DeletedWishList(completedWishListTasks,viewModel)
                 }
 
 
@@ -107,11 +107,11 @@ fun WishList(tasks: List<Tasks>){
 }
 
 @Composable
-fun DeletedWishList(tasks : List<Tasks>){
+fun DeletedWishList(tasks : List<Tasks>,viewModel: UserViewModel){
     LazyColumn {
         items(tasks) {
             task->
-            DeletedWishlistItem(task = task)
+            DeletedWishlistItem(task = task, viewModel = viewModel)
         }
     }
 }
@@ -167,7 +167,7 @@ fun WishlistItem(task: Tasks) {
 }
 
 @Composable
-fun DeletedWishlistItem(task: Tasks){
+fun DeletedWishlistItem(task: Tasks,viewModel: UserViewModel){
 
     var selected by remember{ mutableStateOf(true) }
 
@@ -179,7 +179,9 @@ fun DeletedWishlistItem(task: Tasks){
         Row (modifier = Modifier
             .fillMaxWidth()
             .padding(4.dp)){
-            RadioButton(selected =selected , onClick = { /*TODO*/ })
+            RadioButton(selected =selected , onClick = {
+                viewModel.updateTaskToActive(task.task)
+            })
             Text(text = task.task, style = CompletedTaskStyle)
         }
     }

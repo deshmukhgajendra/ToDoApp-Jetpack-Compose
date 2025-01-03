@@ -36,6 +36,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.to_do.ActionIcon
 import com.example.to_do.Database.Tasks
@@ -47,72 +48,81 @@ import com.example.to_do.ui.theme.BottomBarcolor
 import com.example.to_do.ui.theme.CompletedTaskStyle
 
 @Composable
-fun WorkPage (title:String,navController: NavController,viewModel: UserViewModel){
+fun WorkPage(title: String, navController: NavController, viewModel: UserViewModel) {
 
     val tasks by viewModel.WorkTasks.observeAsState(emptyList())
     val completedWorkTasks by viewModel.completedWorkTask.observeAsState(emptyList())
 
-    Scaffold{ paddingValues ->
+    Scaffold { paddingValues ->
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                // Adjust padding for the Top App Bar
-                .padding(top = 110.dp)
+                .padding(top = 110.dp) // Adjust padding for the Top App Bar
         ) {
             if (tasks.isEmpty() && completedWorkTasks.isEmpty()) {
+                // Display empty state message
                 Column(modifier = Modifier.align(Alignment.Center)) {
                     Image(
                         painter = painterResource(id = R.drawable.rb_5241),
-                        contentDescription = "no data image", modifier = Modifier
-                            .size(250.dp)
+                        contentDescription = "No data image",
+                        modifier = Modifier.size(250.dp)
                     )
                     Text(
-                        text = "No tasks in this category" +
-                                "Click + to create your task",
+                        text = "No tasks in this category\nClick + to create your task",
                         style = MaterialTheme.typography.bodyMedium,
                         modifier = Modifier.align(Alignment.CenterHorizontally)
-
                     )
                 }
             } else {
-                if (tasks.isNotEmpty()){
-                    WorkList(tasks = tasks)
+                // Use a single LazyColumn for tasks and completed tasks
+                LazyColumn(
+                    modifier = Modifier.fillMaxSize()
+                ) {
+                    if (tasks.isNotEmpty()) {
+                        items(tasks) { task ->
+                            WorkItem(task = task,viewModel)
+                        }
+                    }
+                    if (completedWorkTasks.isNotEmpty()) {
+                        item {
+                            Spacer(modifier = Modifier.padding(16.dp))
+                            Text(
+                                text = "Completed Tasks",
+                                fontSize = 20.sp,
+                                modifier = Modifier.padding(8.dp)
+                            )
+                        }
+                        items(completedWorkTasks) { task ->
+                            DeletedWorkItem(task = task,viewModel)
+                        }
+                    }
                 }
-                if (completedWorkTasks.isNotEmpty()){
-                    Spacer(modifier = Modifier.padding(16.dp))
-
-                    Text(text = "Completed Tasks",
-                        fontSize = 20.sp,
-                        modifier = Modifier.padding(vertical = 16.dp))
-                    DeletedWorkListTask(tasks = completedWorkTasks)
-                }
-
-
             }
         }
     }
 }
 
-@Composable
-fun WorkList(tasks: List<Tasks>){
-    LazyColumn {
-        items(tasks){task->
 
-            WorkItem(task=task)
+@Composable
+fun WorkList(tasks: List<Tasks>, viewModel: UserViewModel) {
+    LazyColumn {
+        items(tasks) { task ->
+            WorkItem(task = task, viewModel )
         }
     }
 }
 
 @Composable
-fun DeletedWorkListTask(tasks:List<Tasks>){
+fun DeletedWorkListTask(tasks: List<Tasks>,viewModel: UserViewModel) {
     LazyColumn {
-        items(tasks){ task->
-            DeletedWorkItem(task = task)
+        items(tasks) { task ->
+            DeletedWorkItem(task = task,viewModel)
         }
     }
 }
+
 @Composable
-fun WorkItem(task: Tasks) {
+fun WorkItem(task: Tasks,viewModel: UserViewModel) {
 
     var selected by remember { mutableStateOf(false) }
     val context = LocalContext.current
@@ -156,7 +166,10 @@ fun WorkItem(task: Tasks) {
                 modifier = Modifier.padding(8.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                RadioButton(selected = selected, onClick = { selected = !selected })
+                RadioButton(selected = selected,
+                    onClick = {
+                        selected = false
+                        viewModel.updateTask(task.task)})
                 Text(text = task.task, style = MaterialTheme.typography.bodyLarge)
             }
         }
@@ -164,12 +177,18 @@ fun WorkItem(task: Tasks) {
 }
 
 @Composable
-fun DeletedWorkItem(task :Tasks){
+fun DeletedWorkItem(task :Tasks,viewModel: UserViewModel){
 
     var selected by remember { mutableStateOf(true) }
-    Card {
-        Row {
-            RadioButton(selected = selected, onClick = { /*TODO*/ })
+    Card(modifier= Modifier
+        .fillMaxSize()
+        .padding(4.dp)
+        , shape = RoundedCornerShape(6.dp),
+        onClick = {}
+    ) {
+        Row (modifier = Modifier.padding(8.dp),
+            verticalAlignment = Alignment.CenterVertically){
+            RadioButton(selected = selected, onClick = { viewModel.updateTaskToActive(task.task) })
             Text(text = task.task, style = CompletedTaskStyle)
         }
     }

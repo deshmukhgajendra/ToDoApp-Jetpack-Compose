@@ -50,4 +50,9 @@ class UserViewModel @Inject constructor(private val database : todolistDatabase)
             database.todolistdao().updateStatus(taskName)
         }
     }
+    fun updateTaskToActive(taskName: String){
+        viewModelScope.launch{
+            database.todolistdao().updateStatusToActive(taskName)
+        }
+    }
 }

@@ -182,7 +182,8 @@ fun DeletedBirthdayItem(task:Tasks,viewModel: UserViewModel){
     ){
         Row (modifier = Modifier.padding(8.dp),
             verticalAlignment = Alignment.CenterVertically){
-            RadioButton(selected = selectedButton, onClick = { /*TODO*/ })
+            RadioButton(selected = selectedButton, onClick = {
+                viewModel.updateTaskToActive(task.task) })
             Text(text = task.task, style = CompletedTaskStyle)
         }
     }

@@ -111,7 +111,7 @@ fun CompletedListList(tasks: List<Tasks>,viewModel: UserViewModel){
     LazyColumn {
         items(tasks){
             task->
-            DeletedListItem(task = task)
+            DeletedListItem(task = task,viewModel)
         }
     }
 }
@@ -167,7 +167,7 @@ fun ListItem(task: Tasks,viewModel: UserViewModel) {
 }
 
 @Composable
-fun DeletedListItem(task: Tasks){
+fun DeletedListItem(task: Tasks,viewModel: UserViewModel){
     
     var selected by remember { mutableStateOf(true) }
     
@@ -177,7 +177,8 @@ fun DeletedListItem(task: Tasks){
         shape = RoundedCornerShape(6.dp)
     ) {
         Row {
-            RadioButton(selected = selected, onClick = { /* to do*/ })
+            RadioButton(selected = selected, onClick = {
+                viewModel.updateTaskToActive(task.task) })
             Text(text = task.task, style = CompletedTaskStyle)
         }
         

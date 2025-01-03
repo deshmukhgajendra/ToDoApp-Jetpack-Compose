@@ -36,6 +36,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.to_do.ActionIcon
 import com.example.to_do.Database.Tasks
@@ -85,9 +86,9 @@ fun PersonalPage(title: String,navController: NavController,viewModel: UserViewM
 
                         Text(text = "Completed Task",
                             fontSize = 20.sp,
-                            modifier = Modifier.padding(vertical = 8.dp)
+                            modifier = Modifier.padding(8.dp)
                         )
-                        DeletedPersonalList(tasks = CompletedPersonaltask)
+                        DeletedPersonalList(tasks = CompletedPersonaltask,viewModel)
                     }
 
 
@@ -109,10 +110,10 @@ fun PersonalList(tasks: List<Tasks>){
 }
 
 @Composable
-fun DeletedPersonalList(tasks:List<Tasks>){
+fun DeletedPersonalList(tasks:List<Tasks>,viewModel: UserViewModel){
     LazyColumn {
         items(tasks){task->
-            DeletedPersonalItem(task = task)
+            DeletedPersonalItem(task = task,viewModel)
 
         }
     }
@@ -170,8 +171,8 @@ fun PersonalItem(task: Tasks) {
 }
 
 @Composable
-fun DeletedPersonalItem(task :Tasks){
-    var selected by remember{ mutableStateOf(true) }
+fun DeletedPersonalItem(task :Tasks, viewModel: UserViewModel){
+    val selected by remember{ mutableStateOf(true) }
 
     Card (modifier = Modifier
         .fillMaxWidth()
@@ -180,7 +181,7 @@ fun DeletedPersonalItem(task :Tasks){
     ){
         Row(modifier = Modifier.padding(8.dp),
             verticalAlignment = Alignment.CenterVertically) {
-            RadioButton(selected =selected , onClick = { /*TODO*/ })
+            RadioButton(selected =selected , onClick = { viewModel.updateTaskToActive(task.task) })
             Text(text = task.task, style = CompletedTaskStyle)
         }
     }

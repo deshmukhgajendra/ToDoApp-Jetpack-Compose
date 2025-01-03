@@ -201,50 +201,6 @@ fun TaskItem(task: Tasks, viewModel: UserViewModel) {
         }
     }
 
-
-//    SwipeToDismissBox(
-//        state = swipeDismissState,
-//        backgroundContent = {
-//            val color by animateColorAsState(
-//                when (swipeDismissState.targetValue) {
-//                    SwipeToDismissBoxValue.Settled -> Color.Transparent
-//                    SwipeToDismissBoxValue.StartToEnd -> Color.Green
-//                    SwipeToDismissBoxValue.EndToStart -> Color.Red
-//                }
-//            )
-//            Box(modifier = Modifier
-//                .fillMaxSize()
-//                .background(color = color))
-//        }
-//    ){
-    // this is for card funcnality
-//        Card(
-//            modifier = Modifier
-//                .fillMaxWidth()
-//                .padding(4.dp),
-//            shape = RoundedCornerShape(6.dp),
-//            onClick = {
-//                val intent = Intent(context, TaskProperty::class.java).apply {
-//                    putExtra("Task_Name", task.task)
-//                }
-//                context.startActivity(intent)
-//            }
-//        ) {
-//            Row(
-//                modifier = Modifier.padding(8.dp),
-//                verticalAlignment = Alignment.CenterVertically
-//            ) {
-//                RadioButton(
-//                    selected = false, // Use task.isCompleted if available
-//                    onClick = {
-//                        // Call ViewModel method to update task completion (replace with actual function)
-//                        viewModel.updateTask(task.task)
-//                    }
-//                )
-//                Text(text = task.task, style = MaterialTheme.typography.bodyLarge)
-//            }
-//        }
-//    }
 }
 
 
@@ -254,21 +210,7 @@ fun TaskItem(task: Tasks, viewModel: UserViewModel) {
 fun DeletedTaskItem( task: Tasks,viewModel: UserViewModel){
 
     val selectedButton by remember { mutableStateOf(true) }
-    val swipeToDismissState= rememberSwipeToDismissBoxState()
 
-    SwipeToDismissBox(state = swipeToDismissState,
-        backgroundContent = {
-            val color by animateColorAsState(
-                when(swipeToDismissState.targetValue){
-                    SwipeToDismissBoxValue.Settled ->Color.Transparent
-                    SwipeToDismissBoxValue.StartToEnd -> Color.Green
-                    SwipeToDismissBoxValue.EndToStart -> Color.Red
-                }
-            )
-            Box(modifier = Modifier
-                .fillMaxSize()
-                .background(color = color))
-        }) {
         Card (modifier= Modifier
             .fillMaxWidth()
             .padding(4.dp)
@@ -277,11 +219,12 @@ fun DeletedTaskItem( task: Tasks,viewModel: UserViewModel){
         ){
             Row (modifier = Modifier.padding(8.dp),
                 verticalAlignment = Alignment.CenterVertically){
-                RadioButton(selected = selectedButton, onClick = { /*TODO*/ })
+                RadioButton(selected = selectedButton, onClick = {
+                    viewModel.updateTaskToActive(task.task) })
                 Text(text = task.task, style = CompletedTaskStyle)
             }
         }
-    }
+
 
 
 }

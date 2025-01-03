@@ -66,6 +66,8 @@ interface ToDoListDAO  {
     @Query("UPDATE todolist SET status= 'deactivated' WHERE task = :taskName")
     suspend fun updateStatus(taskName: String)
 
+    @Query("UPDATE todolist SET status= 'Active' WHERE task = :taskName")
+    suspend fun updateStatusToActive(taskName: String)
 
 
 }
