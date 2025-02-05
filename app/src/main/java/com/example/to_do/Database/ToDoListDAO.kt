@@ -24,7 +24,6 @@ interface ToDoListDAO  {
     fun getDeactivatedTasks(): LiveData<List<Tasks>>
 
 
-
     // for work page
     @Query("SELECT * FROM todolist WHERE category ='Work' AND status='Active'")
     fun getWorkTask(): LiveData<List<Tasks>>
@@ -60,14 +59,15 @@ interface ToDoListDAO  {
     @Query("SELECT * FROM todolist WHERE category='List' AND status='deactivated'")
     fun getAllCompletedListTask():LiveData<List<Tasks>>
 
-
-
     // updates the status of tast to deactivated
     @Query("UPDATE todolist SET status= 'deactivated' WHERE task = :taskName")
     suspend fun updateStatus(taskName: String)
 
     @Query("UPDATE todolist SET status= 'Active' WHERE task = :taskName")
     suspend fun updateStatusToActive(taskName: String)
+
+    @Query("SELECT * FROM todolist WHERE date = :date")
+    fun getTaskForDate(date:String) : LiveData<List<Tasks>>
 
 
 }

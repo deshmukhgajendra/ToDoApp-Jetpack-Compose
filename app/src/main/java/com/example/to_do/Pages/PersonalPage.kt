@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -77,19 +78,22 @@ fun PersonalPage(title: String,navController: NavController,viewModel: UserViewM
                         )
                     }
                 } else {
-                    if (tasks.isNotEmpty()){
-                        PersonalList(tasks = tasks)
-                    }
-                    if (CompletedPersonaltask.isNotEmpty()){
+                    Column {
+                        if (tasks.isNotEmpty()){
+                            PersonalList(tasks = tasks,viewModel)
+                        }
+                        if (CompletedPersonaltask.isNotEmpty()){
 
-                        Spacer(modifier = Modifier.padding(16.dp))
+                            Spacer(modifier = Modifier.height(16.dp))
 
-                        Text(text = "Completed Task",
-                            fontSize = 20.sp,
-                            modifier = Modifier.padding(8.dp)
-                        )
-                        DeletedPersonalList(tasks = CompletedPersonaltask,viewModel)
+                            Text(text = "Completed Task",
+                                fontSize = 20.sp,
+                                modifier = Modifier.padding(8.dp)
+                            )
+                            DeletedPersonalList(tasks = CompletedPersonaltask,viewModel)
+                        }
                     }
+
 
 
                 }
@@ -100,11 +104,11 @@ fun PersonalPage(title: String,navController: NavController,viewModel: UserViewM
 }
 
 @Composable
-fun PersonalList(tasks: List<Tasks>){
+fun PersonalList(tasks: List<Tasks>,viewModel: UserViewModel){
     LazyColumn {
         items(tasks){task->
 
-            PersonalItem(task=task)
+            PersonalItem(task=task,viewModel)
         }
     }
 }
@@ -119,7 +123,7 @@ fun DeletedPersonalList(tasks:List<Tasks>,viewModel: UserViewModel){
     }
 }
 @Composable
-fun PersonalItem(task: Tasks) {
+fun PersonalItem(task: Tasks,viewModel: UserViewModel) {
 
     var selected by remember { mutableStateOf(false) }
     val context = LocalContext.current
@@ -163,7 +167,7 @@ fun PersonalItem(task: Tasks) {
                 modifier = Modifier.padding(8.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                RadioButton(selected = selected, onClick = { selected = !selected })
+                RadioButton(selected = selected, onClick = { viewModel.updateTask(task.task) })
                 Text(text = task.task, style = MaterialTheme.typography.bodyLarge)
             }
         }

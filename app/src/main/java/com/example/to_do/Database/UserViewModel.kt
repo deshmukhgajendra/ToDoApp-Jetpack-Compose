@@ -1,5 +1,6 @@
 package com.example.to_do.Database
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -54,5 +55,9 @@ class UserViewModel @Inject constructor(private val database : todolistDatabase)
         viewModelScope.launch{
             database.todolistdao().updateStatusToActive(taskName)
         }
+    }
+
+    fun getTaskForDate(date:String):LiveData<List<Tasks>>{
+        return database.todolistdao().getTaskForDate(date)
     }
 }

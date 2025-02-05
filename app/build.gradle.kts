@@ -102,6 +102,17 @@ dependencies {
     implementation (libs.androidx.hilt.navigation.compose)
     implementation(libs.androidx.material)
     implementation (libs.swipe)
+    implementation (libs.coil.compose)
+    implementation (libs.coil.svg)
+    implementation (libs.lottie.compose)
+    implementation (libs.glide.v4151)
+    implementation (libs.androidx.lifecycle.runtime.ktx.v262) // For splash timeout
+    implementation (libs.material3)
+
+
+
+
+
 
 
 

@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -77,18 +78,21 @@ fun WishlistPage(title:String,navController: NavController,viewModel: UserViewMo
                 }
             } else {
 
-                if (tasks.isNotEmpty()){
-                    WishList(tasks = tasks)
-                }
-                if (completedWishListTasks.isNotEmpty()){
-                    Spacer(modifier = Modifier.padding(16.dp))
+                Column {
+                    if (tasks.isNotEmpty()){
+                        WishList(tasks = tasks,viewModel)
+                    }
+                    if (completedWishListTasks.isNotEmpty()){
+                        Spacer(modifier = Modifier.height(16.dp))
 
-                    Text(text = "Completed Tasks",
-                        fontSize = 20.sp,
-                        modifier = Modifier.padding( 8.dp))
+                        Text(text = "Completed Tasks",
+                            fontSize = 20.sp,
+                            modifier = Modifier.padding( 8.dp))
 
-                    DeletedWishList(completedWishListTasks,viewModel)
+                        DeletedWishList(completedWishListTasks,viewModel)
+                    }
                 }
+
 
 
             }
@@ -97,11 +101,11 @@ fun WishlistPage(title:String,navController: NavController,viewModel: UserViewMo
 }
 
 @Composable
-fun WishList(tasks: List<Tasks>){
+fun WishList(tasks: List<Tasks>,viewModel: UserViewModel){
     LazyColumn {
         items(tasks){task->
 
-            WishlistItem(task = task)
+            WishlistItem(task = task,viewModel)
         }
     }
 }
@@ -116,7 +120,7 @@ fun DeletedWishList(tasks : List<Tasks>,viewModel: UserViewModel){
     }
 }
 @Composable
-fun WishlistItem(task: Tasks) {
+fun WishlistItem(task: Tasks,viewModel: UserViewModel) {
 
     var selected by remember { mutableStateOf(false) }
     val context = LocalContext.current
@@ -159,7 +163,7 @@ fun WishlistItem(task: Tasks) {
                 modifier = Modifier.padding(8.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                RadioButton(selected = selected, onClick = { selected = !selected })
+                RadioButton(selected = selected, onClick = { viewModel.updateTask(task.task) })
                 Text(text = task.task, style = MaterialTheme.typography.bodyLarge)
             }
         }
@@ -176,9 +180,8 @@ fun DeletedWishlistItem(task: Tasks,viewModel: UserViewModel){
         .padding(4.dp),
         shape = RoundedCornerShape(6.dp)
     ) {
-        Row (modifier = Modifier
-            .fillMaxWidth()
-            .padding(4.dp)){
+        Row (modifier = Modifier.padding(8.dp),
+            verticalAlignment = Alignment.CenterVertically){
             RadioButton(selected =selected , onClick = {
                 viewModel.updateTaskToActive(task.task)
             })

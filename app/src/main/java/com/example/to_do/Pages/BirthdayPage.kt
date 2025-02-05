@@ -171,7 +171,7 @@ fun BirthdayItem(task :Tasks,viewModel: UserViewModel) {
 @Composable
 fun DeletedBirthdayItem(task:Tasks,viewModel: UserViewModel){
     
-    var selectedButton by remember { mutableStateOf(true) }
+    val selectedButton by remember { mutableStateOf(true) }
 
 
     Card (modifier= Modifier
@@ -183,7 +183,8 @@ fun DeletedBirthdayItem(task:Tasks,viewModel: UserViewModel){
         Row (modifier = Modifier.padding(8.dp),
             verticalAlignment = Alignment.CenterVertically){
             RadioButton(selected = selectedButton, onClick = {
-                viewModel.updateTaskToActive(task.task) })
+                viewModel.updateTaskToActive(task.task)
+            })
             Text(text = task.task, style = CompletedTaskStyle)
         }
     }

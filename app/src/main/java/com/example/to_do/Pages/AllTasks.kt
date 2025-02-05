@@ -8,6 +8,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
@@ -20,8 +21,10 @@ import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.DateRange
@@ -30,7 +33,6 @@ import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.DismissValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -80,14 +82,12 @@ fun AllTasks(title: String, navController: NavController, viewModel: UserViewMod
     val tasks by viewModel.tasks.observeAsState(emptyList())
     val deactivatedTasks by viewModel.deactivatedTask.observeAsState(emptyList())
 
-    Scaffold{ paddingValues ->
+    Scaffold { paddingValues ->
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                // Adjust padding for the Top App Bar
-                .padding(top = 110.dp)
+                .padding(paddingValues)
         ) {
-
             if (tasks.isEmpty() && deactivatedTasks.isEmpty()) {
                 // Show empty state when both lists are empty
                 Column(modifier = Modifier.align(Alignment.Center)) {
@@ -103,29 +103,43 @@ fun AllTasks(title: String, navController: NavController, viewModel: UserViewMod
                     )
                 }
             } else {
-                // Display tasks and deleted tasks if available
-                Column {
+
+                LazyColumn(
+                    modifier = Modifier.fillMaxSize(),
+                    contentPadding = PaddingValues(vertical = 16.dp)
+                ) {
                     if (tasks.isNotEmpty()) {
-                        TasksList(tasks = tasks, viewModel)
+                        item {
+                            Text(
+                                text = "Active Tasks",
+                                fontSize = 20.sp,
+                                modifier = Modifier.padding(8.dp)
+                            )
+                        }
+                        items(tasks) { task ->
+                            TaskItem(task, viewModel)
+                        }
                     }
 
                     if (deactivatedTasks.isNotEmpty()) {
-                        Spacer(modifier = Modifier.height(16.dp))
-                        Text(
-                            text = "Completed Tasks",
-                            fontSize = 20.sp,
-                            modifier = Modifier.padding(8.dp)
-                        )
-                        DeletedTaskList(tasks = deactivatedTasks, viewModel = viewModel)
+                        item {
+                            Spacer(modifier = Modifier.height(16.dp))
+                            Text(
+                                text = "Completed Tasks",
+                                fontSize = 20.sp,
+                                modifier = Modifier.padding(8.dp)
+                            )
+                        }
+                        items(deactivatedTasks) { task ->
+                            DeletedTaskItem(task, viewModel)
+                        }
                     }
-
-
                 }
-
             }
         }
     }
 }
+
 
 
 @Composable

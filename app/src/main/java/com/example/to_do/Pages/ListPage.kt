@@ -58,7 +58,7 @@ fun ListPage (title: String,navController: NavController,viewModel:UserViewModel
                 // Adjust padding for the Top App Bar
                 .padding(top = 110.dp)
         ) {
-            if (tasks.isEmpty() && completedListTask.isNotEmpty()) {
+            if (tasks.isEmpty() && completedListTask.isEmpty()) {
 
                     Column(modifier = Modifier.align(Alignment.Center)) {
                         Image(
@@ -84,7 +84,7 @@ fun ListPage (title: String,navController: NavController,viewModel:UserViewModel
                             Spacer(modifier = Modifier.padding(16.dp))
                             Text(text = "Completed Task",
                                 fontSize = 20.sp,
-                                modifier = Modifier.padding(vertical = 8.dp)
+                                modifier = Modifier.padding( 8.dp)
                             )
                             CompletedListList(tasks = completedListTask, viewModel =viewModel )
                         }
@@ -169,14 +169,15 @@ fun ListItem(task: Tasks,viewModel: UserViewModel) {
 @Composable
 fun DeletedListItem(task: Tasks,viewModel: UserViewModel){
     
-    var selected by remember { mutableStateOf(true) }
+    val selected by remember { mutableStateOf(true) }
     
     Card(modifier = Modifier
         .fillMaxWidth()
         .padding(4.dp),
         shape = RoundedCornerShape(6.dp)
     ) {
-        Row {
+        Row (modifier = Modifier.padding(8.dp),
+            verticalAlignment = Alignment.CenterVertically) {
             RadioButton(selected = selected, onClick = {
                 viewModel.updateTaskToActive(task.task) })
             Text(text = task.task, style = CompletedTaskStyle)
